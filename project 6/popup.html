@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareerTrack Job Clipper</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="popup-wrap">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="logo">
+        <img src="icons/icon48.png" alt="CareerTrack" class="logo-icon" />
+        <span class="logo-text">CareerTrack</span>
+      </div>
+      <div class="header-actions">
+        <button id="btn-board" class="btn-icon" title="Open Board">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="18" rx="1"/>
+            <rect x="14" y="3" width="7" height="10" rx="1"/>
+            <rect x="14" y="17" width="7" height="4" rx="1"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Loading state -->
+    <div id="state-loading" class="state-view">
+      <div class="spinner"></div>
+      <p>Detecting job information…</p>
+    </div>
+
+    <!-- Not a job page / Detection failed -->
+    <div id="state-no-job" class="state-view hidden">
+      <div class="empty-icon">🔍</div>
+      <p class="empty-title">No job automatically detected</p>
+      <p class="empty-sub">Navigate to a job page on LinkedIn, Indeed, or Internshala, or enter details manually below.</p>
+      <div class="no-job-actions">
+        <button id="btn-enter-manual" class="btn-primary full-width">✍ Enter Job Manually</button>
+        <button id="btn-open-board-2" class="btn-secondary full-width" style="margin-top:8px">Open Application Board</button>
+      </div>
+    </div>
+
+    <!-- Already saved -->
+    <div id="state-saved" class="state-view hidden">
+      <div class="saved-banner">
+        <span class="checkmark">✓</span>
+        <span>Already in your tracker!</span>
+      </div>
+      <div id="saved-job-info" class="job-preview"></div>
+      <div class="action-row">
+        <button id="btn-view-board" class="btn-primary full-width">View on Board</button>
+      </div>
+    </div>
+
+    <!-- Job preview & save (both auto-detected & manual entry) -->
+    <div id="state-preview" class="state-view hidden">
+      <div class="job-preview-card">
+        <div class="preview-header-row">
+          <div class="site-badge" id="site-badge">DETECTED</div>
+          <span class="edit-hint">Click fields to edit</span>
+        </div>
+
+        <div class="form-row">
+          <label for="preview-role-input">Role Title *</label>
+          <input type="text" id="preview-role-input" class="input-field f-bold" placeholder="e.g. Software Engineer Intern" />
+        </div>
+
+        <div class="form-row">
+          <label for="preview-company-input">Company Name *</label>
+          <input type="text" id="preview-company-input" class="input-field" placeholder="e.g. Google, Acme Corp" />
+        </div>
+
+        <div class="meta-grid">
+          <div class="form-row">
+            <label for="preview-location-input">Location</label>
+            <input type="text" id="preview-location-input" class="input-field" placeholder="e.g. Remote, NY" />
+          </div>
+          <div class="form-row">
+            <label for="preview-type-input">Type</label>
+            <input type="text" id="preview-type-input" class="input-field" placeholder="e.g. Full-time" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="deadline-input">Deadline Date</label>
+          <input type="date" id="deadline-input" class="input-field" />
+          <span id="preview-deadline-raw" class="deadline-raw-text"></span>
+        </div>
+
+        <div class="form-row">
+          <label for="notes-input">Notes</label>
+          <textarea id="notes-input" class="input-field" rows="2" placeholder="Add notes (e.g. salary, referral, stage)…"></textarea>
+        </div>
+
+        <div class="form-row reminder-row">
+          <label>
+            <input type="checkbox" id="reminder-chk" checked />
+            Remind me before deadline
+          </label>
+        </div>
+      </div>
+
+      <div id="save-error" class="error-msg hidden"></div>
+
+      <div class="action-row">
+        <button id="btn-save" class="btn-primary flex-1">
+          <span id="save-btn-text">📌 Save This Job</span>
+        </button>
+        <button id="btn-open-board-3" class="btn-secondary">Board</button>
+      </div>
+    </div>
+
+    <!-- Success state -->
+    <div id="state-success" class="state-view hidden">
+      <div class="success-anim">✓</div>
+      <p class="success-title">Job Saved to Board!</p>
+      <p id="success-desc" class="success-desc"></p>
+      <button id="btn-view-board-2" class="btn-primary full-width">Open Board</button>
+    </div>
+
+    <!-- Footer stats -->
+    <footer class="popup-footer">
+      <span id="footer-count">Loading…</span>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareerTrack – Job Board</title>
+  <link rel="stylesheet" href="board.css" />
+</head>
+<body>
+
+<!-- ══ App Shell ══════════════════════════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- ── Top Bar ── -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <img src="icons/icon48.png" alt="Logo" class="brand-icon" />
+      <div>
+        <span class="brand-name">CareerTrack</span>
+        <span class="brand-sub">Application Tracker</span>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button id="btn-add" class="btn-accent">+ Add Job</button>
+      <button id="btn-export" class="btn-outline" title="Export CSV">⬇ Export CSV</button>
+      <button id="btn-settings" class="btn-icon-round" title="Settings">⚙</button>
+    </div>
+  </header>
+
+  <!-- ── Toolbar ── -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <input type="search" id="search-input" placeholder="Search by role or company…" class="search-input" />
+    </div>
+    <div class="filter-wrap">
+      <select id="filter-status" class="select-filter" aria-label="Filter by status">
+        <option value="">All Statuses</option>
+        <option value="SAVED">Saved</option>
+        <option value="APPLIED">Applied</option>
+        <option value="INTERVIEW">Interview</option>
+        <option value="RESULT">Result</option>
+      </select>
+      <select id="filter-deadline" class="select-filter" aria-label="Filter by deadline">
+        <option value="">All Deadlines</option>
+        <option value="overdue">Overdue</option>
+        <option value="today">Due Today</option>
+        <option value="week">Due This Week (7d)</option>
+        <option value="month">Due This Month</option>
+        <option value="none">No Deadline</option>
+      </select>
+    </div>
+    <div class="overdue-badge hidden" id="overdue-badge">
+      ⚠ <span id="overdue-count">0</span> overdue
+    </div>
+  </div>
+
+  <!-- ── Kanban Board ── -->
+  <main class="board" id="board">
+    <div class="col" id="col-SAVED" data-status="SAVED">
+      <div class="col-header">
+        <span class="col-title">📌 Saved</span>
+        <span class="col-count badge" id="count-SAVED">0</span>
+      </div>
+      <div class="col-cards" id="cards-SAVED"></div>
+    </div>
+    <div class="col" id="col-APPLIED" data-status="APPLIED">
+      <div class="col-header">
+        <span class="col-title">📤 Applied</span>
+        <span class="col-count badge" id="count-APPLIED">0</span>
+      </div>
+      <div class="col-cards" id="cards-APPLIED"></div>
+    </div>
+    <div class="col" id="col-INTERVIEW" data-status="INTERVIEW">
+      <div class="col-header">
+        <span class="col-title">🎙 Interview</span>
+        <span class="col-count badge" id="count-INTERVIEW">0</span>
+      </div>
+      <div class="col-cards" id="cards-INTERVIEW"></div>
+    </div>
+    <div class="col" id="col-RESULT" data-status="RESULT">
+      <div class="col-header">
+        <span class="col-title">🏁 Result</span>
+        <span class="col-count badge" id="count-RESULT">0</span>
+      </div>
+      <div class="col-cards" id="cards-RESULT"></div>
+    </div>
+  </main>
+
+  <!-- ── Empty State ── -->
+  <div id="empty-state" class="empty-state hidden">
+    <div class="empty-icon">🗂</div>
+    <h2>No applications saved yet</h2>
+    <p>Visit job listings on LinkedIn, Indeed, or Internshala and save with one click, or add your first opportunity manually.</p>
+    <button id="btn-empty-add" class="btn-accent">+ Add Job Manually</button>
+  </div>
+
+</div><!-- /#app -->
+
+<!-- ══ Job Modal ══════════════════════════════════════════════════════════════ -->
+<div id="job-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="modal-title">Add Job</h2>
+      <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="job-form" novalidate>
+        <div class="form-grid">
+          <div class="field-group col-span-2">
+            <label for="f-role">Role Title <span class="req">*</span></label>
+            <input type="text" id="f-role" class="f-input" placeholder="e.g. Frontend Developer" required />
+          </div>
+          <div class="field-group col-span-2">
+            <label for="f-company">Company Name <span class="req">*</span></label>
+            <input type="text" id="f-company" class="f-input" placeholder="e.g. Acme Corp" required />
+          </div>
+          <div class="field-group col-span-2">
+            <label for="f-url">Job URL</label>
+            <input type="url" id="f-url" class="f-input" placeholder="https://…" />
+          </div>
+          <div class="field-group">
+            <label for="f-deadline">Deadline Date</label>
+            <input type="date" id="f-deadline" class="f-input" />
+          </div>
+          <div class="field-group">
+            <label for="f-deadline-raw">Raw Deadline Text</label>
+            <input type="text" id="f-deadline-raw" class="f-input" placeholder="e.g. Dec 31, 2024" />
+          </div>
+          <div class="field-group">
+            <label for="f-location">Location</label>
+            <input type="text" id="f-location" class="f-input" placeholder="e.g. Remote, San Francisco" />
+          </div>
+          <div class="field-group">
+            <label for="f-type">Employment Type</label>
+            <input type="text" id="f-type" class="f-input" placeholder="e.g. Full-time, Internship" />
+          </div>
+          <div class="field-group">
+            <label for="f-status">Stage / Column</label>
+            <select id="f-status" class="f-input">
+              <option value="SAVED">Saved</option>
+              <option value="APPLIED">Applied</option>
+              <option value="INTERVIEW">Interview</option>
+              <option value="RESULT">Result</option>
+            </select>
+          </div>
+          <div class="field-group" id="result-outcome-group" style="display:none">
+            <label for="f-outcome">Result Outcome</label>
+            <select id="f-outcome" class="f-input">
+              <option value="">— Select outcome —</option>
+              <option value="OFFER">🎉 Offer</option>
+              <option value="REJECTED">Rejected</option>
+              <option value="WITHDRAWN">Withdrawn</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="f-date-applied">Date Applied</label>
+            <input type="date" id="f-date-applied" class="f-input" />
+          </div>
+          <div class="field-group">
+            <label for="f-source">Source Site</label>
+            <input type="text" id="f-source" class="f-input" placeholder="e.g. linkedin, indeed, internshala" />
+          </div>
+          <div class="field-group col-span-2">
+            <label for="f-notes">Notes</label>
+            <textarea id="f-notes" class="f-input" rows="3" placeholder="Add any notes, interview schedule, contact person…"></textarea>
+          </div>
+          <div class="field-group col-span-2 reminder-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="f-reminder" checked />
+              Enable deadline reminder notification
+            </label>
+            <span class="hint" id="reminder-hint"></span>
+          </div>
+        </div>
+
+        <div id="form-error" class="form-error hidden"></div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-outline" id="btn-cancel-form">Cancel</button>
+          <button type="submit" class="btn-accent" id="btn-submit-form">Save Job</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Confirm Delete Modal ═════════════════════════════════════════════════ -->
+<div id="confirm-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+  <div class="modal-box modal-box--sm">
+    <div class="modal-header">
+      <h2>Delete Job Record?</h2>
+      <button class="modal-close" id="confirm-modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-text">Are you sure you want to delete this job?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-outline" id="btn-confirm-cancel">Cancel</button>
+      <button type="button" class="btn-danger" id="btn-confirm-ok">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Settings Panel ════════════════════════════════════════════════════════ -->
+<div id="settings-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="settings-title">Extension Settings</h2>
+      <button class="modal-close" id="settings-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-section">
+        <h3>Deadline Reminders</h3>
+        <div class="field-group">
+          <label for="s-lead-hours">Reminder Lead Time (hours before deadline)</label>
+          <input type="number" id="s-lead-hours" class="f-input" min="1" max="720" value="24" />
+          <span class="hint">Default: 24 hours before 23:59 on the deadline date.</span>
+        </div>
+        <div class="field-group" style="margin-top:12px">
+          <label>Desktop Notification Permission</label>
+          <div id="notif-status" class="notif-status">Checking…</div>
+          <button type="button" id="btn-request-notif" class="btn-outline btn-sm hidden" style="margin-top:6px">Request Notification Permission</button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>Data Management</h3>
+        <p class="hint" style="margin-bottom:10px">All data is kept strictly inside Chrome local storage. No data is sent to external servers.</p>
+        <button type="button" id="btn-export-settings" class="btn-outline full-width">⬇ Export All Records (CSV)</button>
+        <button type="button" id="btn-clear-data" class="btn-danger full-width" style="margin-top:8px">🗑 Clear All Data</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn-outline" id="btn-settings-cancel">Cancel</button>
+      <button type="button" class="btn-accent" id="btn-settings-save">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<script src="board.js"></script>
+</body>
+</html>
