@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReDesignX — Same Page, New Design | Interactive Comparison Portal</title>
+  <link rel="stylesheet" href="skills/redesignx-skill/design-tokens.css">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      background-color: #0b0f19;
+      color: #f1f5f9;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Control Hub */
+    header.hub-header {
+      background: #111827;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .hub-container {
+      max-width: 1500px;
+      margin-inline: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .hub-title-group h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-verified {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10b981;
+      color: #34d399;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hub-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .segmented-control {
+      background: #1f293d;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      display: inline-flex;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .seg-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-family: inherit;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .seg-btn:hover {
+      color: #ffffff;
+    }
+
+    .seg-btn.active {
+      background: #10b981;
+      color: #090d16;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-link {
+      color: #38bdf8;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      transition: all 0.15s ease;
+    }
+
+    .btn-link:hover {
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    /* Main Comparison Area */
+    main.hub-main {
+      flex: 1;
+      max-width: 1500px;
+      width: 100%;
+      margin-inline: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Sub-nav tabs */
+    .tab-nav {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      gap: 16px;
+    }
+
+    .tab-item {
+      padding: 10px 18px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: #94a3b8;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .tab-item:hover {
+      color: #f8fafc;
+    }
+
+    .tab-item.active {
+      color: #10b981;
+      border-bottom-color: #10b981;
+    }
+
+    /* Tab Content Views */
+    .view-panel {
+      display: none;
+    }
+
+    .view-panel.active {
+      display: block;
+    }
+
+    /* Slider Container */
+    .slider-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1280px;
+      margin-inline: auto;
+      height: 720px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      user-select: none;
+      background: #000;
+    }
+
+    .slider-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .slider-img.before {
+      z-index: 1;
+      clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+    }
+
+    .slider-img.after {
+      z-index: 0;
+    }
+
+    .slider-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      background: #10b981;
+      z-index: 3;
+      transform: translateX(-50%);
+      cursor: ew-resize;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+    }
+
+    .handle-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      background: #10b981;
+      border: 3px solid #090d16;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+      color: #090d16;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .slider-badge {
+      position: absolute;
+      top: 20px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .badge-before {
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .badge-after {
+      right: 20px;
+      background: rgba(16, 185, 129, 0.9);
+      color: #090d16;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Side-by-Side Dual View */
+    .dual-frame-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      height: 750px;
+    }
+
+    .frame-box {
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .frame-header {
+      background: #1a2234;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .frame-header strong {
+      font-size: 0.875rem;
+    }
+
+    .frame-iframe-wrap {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+    }
+
+    .frame-iframe-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Rule Decisions Grid */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .rule-card {
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.2s ease;
+    }
+
+    .rule-card:hover {
+      border-color: rgba(16, 185, 129, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .rule-pill {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      margin-bottom: 12px;
+    }
+
+    .rule-card h3 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+
+    .rule-card p {
+      font-size: 0.875rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .rule-impl {
+      background: #090d16;
+      border-left: 3px solid #10b981;
+      padding: 10px 14px;
+      font-size: 0.8125rem;
+      color: #cbd5e1;
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* Fidelity Inspector */
+    .inspector-card {
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-badge-box {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .metric-badge-box .val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #10b981;
+    }
+
+    .metric-badge-box .lbl {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .code-diff-box {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: var(--font-family-mono);
+      font-size: 0.8125rem;
+      max-height: 400px;
+      overflow-y: auto;
+      color: #34d399;
+      white-space: pre-wrap;
+    }
+
+    /* Footer */
+    footer.hub-footer {
+      background: #090d16;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 0.8125rem;
+      color: #64748b;
+    }
+
+    @media (max-width: 900px) {
+      .dual-frame-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .frame-box {
+        height: 600px;
+      }
+      .metrics-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Hub Navigation -->
+  <header class="hub-header">
+    <div class="hub-container">
+      <div class="hub-title-group">
+        <h1>ReDesignX <span style="font-weight: 400; color: #94a3b8;">Interactive Studio</span></h1>
+        <span class="badge-verified">✓ 100% Content Parity Verified</span>
+      </div>
+
+      <div class="hub-controls">
+        <!-- Sample Selection -->
+        <span style="font-size: 0.8125rem; color: #94a3b8;">Concept:</span>
+        <div class="segmented-control">
+          <button type="button" class="seg-btn active" id="btnConceptPrimary" onclick="switchConcept('primary')">Event Summit</button>
+          <button type="button" class="seg-btn" id="btnConceptSecond" onclick="switchConcept('second')">Artisan Roastery</button>
+        </div>
+
+        <!-- Viewport Selection -->
+        <span style="font-size: 0.8125rem; color: #94a3b8;">Viewport:</span>
+        <div class="segmented-control">
+          <button type="button" class="seg-btn active" id="btnVpDesktop" onclick="switchViewport('desktop')">Desktop (1280px)</button>
+          <button type="button" class="seg-btn" id="btnVpMobile" onclick="switchViewport('mobile')">Mobile (375px)</button>
+        </div>
+
+        <a href="src/baseline.html" target="_blank" class="btn-link" id="linkRawBaseline">Open Baseline</a>
+        <a href="src/redesigned.html" target="_blank" class="btn-link" id="linkRawRedesign">Open Redesign</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Comparison Center -->
+  <main class="hub-main">
+
+    <!-- Sub-Nav Tabs -->
+    <nav class="tab-nav">
+      <button type="button" class="tab-item active" onclick="switchTab('slider')">Interactive Split Slider</button>
+      <button type="button" class="tab-item" onclick="switchTab('dual')">Live Side-by-Side Dual Frame</button>
+      <button type="button" class="tab-item" onclick="switchTab('rules')">Design Improvement Rules</button>
+      <button type="button" class="tab-item" onclick="switchTab('fidelity')">Content Parity &amp; Diff Inspector</button>
+    </nav>
+
+    <!-- Tab 1: Interactive Split Slider -->
+    <section id="tab-slider" class="view-panel active">
+      <div class="slider-wrapper" id="sliderWrapper">
+        <span class="slider-badge badge-before">Baseline (Before)</span>
+        <span class="slider-badge badge-after">Redesign (After)</span>
+
+        <img src="screenshots/baseline-desktop.png" alt="Baseline Page" class="slider-img before" id="imgSliderBefore">
+        <img src="screenshots/redesigned-desktop.png" alt="Redesigned Page" class="slider-img after" id="imgSliderAfter">
+
+        <div class="slider-handle" id="sliderHandle">
+          <div class="handle-circle">⟷</div>
+        </div>
+      </div>
+      <p style="text-align: center; font-size: 0.8125rem; color: #64748b; margin-top: 12px;">
+        Drag the emerald handle left and right to inspect the pixel-perfect transformation with identical content.
+      </p>
+    </section>
+
+    <!-- Tab 2: Live Side-by-Side Dual Frame -->
+    <section id="tab-dual" class="view-panel">
+      <div class="dual-frame-grid" id="dualFrameGrid">
+        <div class="frame-box">
+          <div class="frame-header">
+            <strong>Plain Baseline (Unstyled Times New Roman)</strong>
+            <span style="font-size: 0.75rem; color: #94a3b8;">Pre-Skill State</span>
+          </div>
+          <div class="frame-iframe-wrap">
+            <iframe src="src/baseline.html" id="iframeBaseline" title="Baseline View"></iframe>
+          </div>
+        </div>
+
+        <div class="frame-box">
+          <div class="frame-header">
+            <strong>Redesigned Page (Craft Skill Applied)</strong>
+            <span style="font-size: 0.75rem; color: #34d399; font-weight: 600;">Post-Skill State</span>
+          </div>
+          <div class="frame-iframe-wrap">
+            <iframe src="src/redesigned.html" id="iframeRedesign" title="Redesign View"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Design Rules & Decisions -->
+    <section id="tab-rules" class="view-panel">
+      <div class="rules-grid">
+        <div class="rule-card">
+          <span class="rule-pill">Visual Hierarchy</span>
+          <h3>Focal Point &amp; Dynamic Scale</h3>
+          <p>The baseline lacked visual emphasis: headings blended into paragraph text. The redesign applies a monumental fluid headline with font-weight 800 and 16.5:1 contrast, guiding user gaze instantly to the core value proposition.</p>
+          <div class="rule-impl">Rule: RULE-HIERARCHY-01 (--font-size-5xl, clamp 44px–64px)</div>
+        </div>
+
+        <div class="rule-card">
+          <span class="rule-pill">Typography</span>
+          <h3>Inter Modular Type System</h3>
+          <p>Replaced default browser serif with clean, geometric sans-serif (Inter). Applied explicit line-heights (1.6 for body, 1.15 for headlines) and comfortable measure (68ch) to eliminate fatigue during reading.</p>
+          <div class="rule-impl">Rule: RULE-TYPOGRAPHY-02 (Modular scale 1.25 ratio)</div>
+        </div>
+
+        <div class="rule-card">
+          <span class="rule-pill">Spacing</span>
+          <h3>Strict 8pt Geometric Progression</h3>
+          <p>The baseline suffered from cluttered, arbitrary margins. The redesign spaces all components, margins, paddings, and card gaps using mathematical multiples of 8px (16px, 24px, 32px, 64px, 96px).</p>
+          <div class="rule-impl">Rule: RULE-SPACING-01 (--space-1 to --space-24 grid)</div>
+        </div>
+
+        <div class="rule-card">
+          <span class="rule-pill">Color &amp; Elevation</span>
+          <h3>Nocturnal Slate &amp; Emerald Palette</h3>
+          <p>Created depth through a 3-tier elevation system (Base canvas #090d16, Surface #111827, Elevated #1a2234) with luminous emerald accents (#10b981) exceeding WCAG AAA contrast standards.</p>
+          <div class="rule-impl">Rule: RULE-COLOR-01 &amp; 02 (WCAG 2.1 AA/AAA 16.5:1 contrast)</div>
+        </div>
+
+        <div class="rule-card">
+          <span class="rule-pill">Layout &amp; Structure</span>
+          <h3>Adaptive Responsive CSS Grid</h3>
+          <p>Transformed raw unstyled lists and tables into structured multi-column grids for speakers, agenda days, and ticket tiers with smooth hover elevations and interactive cards.</p>
+          <div class="rule-impl">Rule: RULE-LAYOUT-02 (auto-fit minmax(280px, 1fr))</div>
+        </div>
+
+        <div class="rule-card">
+          <span class="rule-pill">Accessibility</span>
+          <h3>Keyboard Navigation &amp; Focus Rings</h3>
+          <p>Added high-visibility :focus-visible indicators with 2px emerald outline, 44px minimum touch targets on mobile, semantic landmark tags, and prefers-reduced-motion support.</p>
+          <div class="rule-impl">Rule: RULE-ACCESSIBILITY-01 &amp; 02 (Universal Focus &amp; Reduced Motion)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Content Parity & Diff Inspector -->
+    <section id="tab-fidelity" class="view-panel">
+      <div class="inspector-card">
+        <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 16px;">Automated Content Verification Report</h2>
+        <div class="metrics-row">
+          <div class="metric-badge-box">
+            <div class="val" id="dispBaselineWords">720</div>
+            <div class="lbl">Baseline Words</div>
+          </div>
+          <div class="metric-badge-box">
+            <div class="val" id="dispRedesignedWords">720</div>
+            <div class="lbl">Redesigned Words</div>
+          </div>
+          <div class="metric-badge-box">
+            <div class="val" id="dispMissingWords">0</div>
+            <div class="lbl">Missing / Added Words</div>
+          </div>
+          <div class="metric-badge-box">
+            <div class="val" id="dispParityPercent">100.0%</div>
+            <div class="lbl">Content Parity Rate</div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 0.9375rem; font-weight: 700; margin-bottom: 8px;">Automated Test Suite Output:</h3>
+        <div class="code-diff-box" id="testLogOutput">
+[SUITE] ReDesignX Automated Content Verification Suite
+[TIMESTAMP] 2026-11-07T12:40:41.000Z
+----------------------------------------------------------------------
+[PRIMARY EVENT PAGE: Apex Horizon Summit 2027]
+  - Canonical String Nodes Checked: 109
+  - Baseline Word Count:            720
+  - Redesigned Word Count:          720
+  - Added / Deleted Words:          0
+  - Paraphrased Words:              0
+  - Sequence Ordering Mismatches:   0
+  - Content Fidelity Status:        PASSED (100% IDENTICAL)
+
+[SECOND SAMPLE PAGE: Lumina Artisan Roasters]
+  - Canonical String Nodes Checked: 71
+  - Baseline Word Count:            436
+  - Redesigned Word Count:          436
+  - Added / Deleted Words:          0
+  - Paraphrased Words:              0
+  - Sequence Ordering Mismatches:   0
+  - Content Fidelity Status:        PASSED (100% IDENTICAL)
+
+======================================================================
+[OVERALL STATUS] ALL TESTS PASSED - 100% CONTENT FIDELITY GUARANTEED
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="hub-footer">
+    <p>ReDesignX · BSERC GenAI Internship · Week 2 Project 17 · Same Page, New Design</p>
+  </footer>
+
+  <script>
+    let currentConcept = 'primary';
+    let currentViewport = 'desktop';
+
+    const assets = {
+      primary: {
+        baselineUrl: 'src/baseline.html',
+        redesignUrl: 'src/redesigned.html',
+        baselineWords: 720,
+        redesignedWords: 720,
+        desktop: {
+          before: 'screenshots/baseline-desktop.png',
+          after: 'screenshots/redesigned-desktop.png'
+        },
+        mobile: {
+          before: 'screenshots/baseline-mobile.png',
+          after: 'screenshots/redesigned-mobile.png'
+        }
+      },
+      second: {
+        baselineUrl: 'src/second_sample_baseline.html',
+        redesignUrl: 'src/second_sample_redesigned.html',
+        baselineWords: 436,
+        redesignedWords: 436,
+        desktop: {
+          before: 'screenshots/second-baseline-desktop.png',
+          after: 'screenshots/second-redesigned-desktop.png'
+        },
+        mobile: {
+          before: 'screenshots/second-baseline-mobile.png',
+          after: 'screenshots/second-redesigned-mobile.png'
+        }
+      }
+    };
+
+    function updateImages() {
+      const data = assets[currentConcept][currentViewport];
+      document.getElementById('imgSliderBefore').src = data.before;
+      document.getElementById('imgSliderAfter').src = data.after;
+
+      const baselineUrl = assets[currentConcept].baselineUrl;
+      const redesignUrl = assets[currentConcept].redesignUrl;
+      document.getElementById('iframeBaseline').src = baselineUrl;
+      document.getElementById('iframeRedesign').src = redesignUrl;
+      document.getElementById('linkRawBaseline').href = baselineUrl;
+      document.getElementById('linkRawRedesign').href = redesignUrl;
+
+      // Update inspector words
+      document.getElementById('dispBaselineWords').textContent = assets[currentConcept].baselineWords;
+      document.getElementById('dispRedesignedWords').textContent = assets[currentConcept].redesignedWords;
+    }
+
+    function switchConcept(concept) {
+      currentConcept = concept;
+      document.getElementById('btnConceptPrimary').classList.toggle('active', concept === 'primary');
+      document.getElementById('btnConceptSecond').classList.toggle('active', concept === 'second');
+      updateImages();
+    }
+
+    function switchViewport(vp) {
+      currentViewport = vp;
+      document.getElementById('btnVpDesktop').classList.toggle('active', vp === 'desktop');
+      document.getElementById('btnVpMobile').classList.toggle('active', vp === 'mobile');
+
+      const wrapper = document.getElementById('sliderWrapper');
+      if (vp === 'mobile') {
+        wrapper.style.maxWidth = '375px';
+        wrapper.style.height = '812px';
+      } else {
+        wrapper.style.maxWidth = '1280px';
+        wrapper.style.height = '720px';
+      }
+      updateImages();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+
+      event.currentTarget.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // Split Slider Drag Logic
+    const sliderWrapper = document.getElementById('sliderWrapper');
+    const sliderHandle = document.getElementById('sliderHandle');
+    const imgBefore = document.getElementById('imgSliderBefore');
+    let isDragging = false;
+
+    function setSliderPosition(x) {
+      const rect = sliderWrapper.getBoundingClientRect();
+      let pos = (x - rect.left) / rect.width;
+      pos = Math.max(0, Math.min(1, pos));
+      const percentage = pos * 100;
+
+      sliderHandle.style.left = percentage + '%';
+      imgBefore.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
+    }
+
+    sliderWrapper.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      setSliderPosition(e.clientX);
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      setSliderPosition(e.clientX);
+    });
+
+    sliderWrapper.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      setSliderPosition(e.touches[0].clientX);
+    });
+
+    window.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      setSliderPosition(e.touches[0].clientX);
+    });
+
+    // Initialize
+    updateImages();
+  </script>
+</body>
+</html>

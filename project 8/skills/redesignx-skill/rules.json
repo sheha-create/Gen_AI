@@ -1,0 +1,97 @@
+{
+  "skill_name": "redesignx-skill",
+  "version": "1.0.0",
+  "rules": [
+    {
+      "id": "RULE-HIERARCHY-01",
+      "category": "Visual Hierarchy",
+      "title": "Distinct Primary Focal Point",
+      "requirement": "The main hero headline must have at least 2.5x font size and 300 weight difference compared to surrounding body text.",
+      "implementation": "Hero headline uses --font-size-5xl (clamp 44px-64px), font-weight 800, leading 1.1, and high contrast against background."
+    },
+    {
+      "id": "RULE-HIERARCHY-02",
+      "category": "Visual Hierarchy",
+      "title": "Category Badges as Anchors",
+      "requirement": "Each content section must begin with a compact, uppercase pill badge before the H2 to orient the reader.",
+      "implementation": "Applied .badge-pill with 12px uppercase semibold text, letter-spacing 0.08em, and subtle emerald tint."
+    },
+    {
+      "id": "RULE-TYPOGRAPHY-01",
+      "category": "Typography",
+      "title": "Modular Fluid Scale",
+      "requirement": "All typography must follow the defined modular scale without arbitrary font sizes.",
+      "implementation": "Utilized CSS variables --font-size-2xs through --font-size-5xl with responsive clamp() values."
+    },
+    {
+      "id": "RULE-TYPOGRAPHY-02",
+      "category": "Typography",
+      "title": "Modern System Font Stack",
+      "requirement": "Replace browser default serif with clean modern sans-serif typography featuring optimal line height.",
+      "implementation": "Inter / system sans stack, body text at 16px with 1.6 line height and comfortable 68ch max reading width."
+    },
+    {
+      "id": "RULE-SPACING-01",
+      "category": "Spacing",
+      "title": "Strict 8pt Geometric Grid",
+      "requirement": "Margins, paddings, and grid gaps must map to multiples of 4px/8px.",
+      "implementation": "Used --space-1 through --space-24 throughout layout, cards, and navigation."
+    },
+    {
+      "id": "RULE-COLOR-01",
+      "category": "Color",
+      "title": "WCAG AA/AAA Contrast Compliance",
+      "requirement": "Body text must maintain > 4.5:1 contrast, large headings > 3:1, and UI elements > 3:1.",
+      "implementation": "Text primary (#f8fafc) on canvas (#090d16) provides 16.5:1 ratio; secondary (#94a3b8) provides 5.8:1 ratio."
+    },
+    {
+      "id": "RULE-COLOR-02",
+      "category": "Color",
+      "title": "Elevation Surface Tiers",
+      "requirement": "Use depth tiers (Canvas, Surface, Elevated Surface) with subtle translucent borders instead of harsh outlines.",
+      "implementation": "Implemented --bg-canvas, --bg-surface (#111827), and --bg-surface-elevated with rgba(255,255,255,0.08) borders."
+    },
+    {
+      "id": "RULE-LAYOUT-01",
+      "category": "Layout",
+      "title": "Centered Max-Width Container",
+      "requirement": "Content must be constrained to a 1200px max-width container with responsive horizontal padding.",
+      "implementation": ".container with max-width: 1200px; margin-inline: auto; padding: 0 24px;."
+    },
+    {
+      "id": "RULE-LAYOUT-02",
+      "category": "Layout",
+      "title": "Responsive CSS Grid",
+      "requirement": "Multi-item groups (speakers, pricing, stats, schedule) must transform into flexible multi-column grids.",
+      "implementation": "Utilized grid-template-columns with auto-fit / auto-fill minmax(280px, 1fr) for adaptive column distribution."
+    },
+    {
+      "id": "RULE-RESPONSIVE-01",
+      "category": "Responsive",
+      "title": "Zero Horizontal Overflow",
+      "requirement": "No component or container may cause horizontal viewport scrolling at any width between 320px and 2560px.",
+      "implementation": "Tested and validated with overflow-x: hidden on root, max-width: 100% on inner blocks."
+    },
+    {
+      "id": "RULE-RESPONSIVE-02",
+      "category": "Responsive",
+      "title": "Mobile Touch Targets",
+      "requirement": "All clickable buttons and navigation links must meet the 44px x 44px minimum touch target size.",
+      "implementation": "Buttons and nav links styled with minimum height 44px and inline padding."
+    },
+    {
+      "id": "RULE-ACCESSIBILITY-01",
+      "category": "Accessibility",
+      "title": "Visible Focus States",
+      "requirement": "Keyboard navigation must show high-contrast, unambiguous focus rings on all interactive elements.",
+      "implementation": ":focus-visible styling with 2px solid emerald ring and 2px offset."
+    },
+    {
+      "id": "RULE-ACCESSIBILITY-02",
+      "category": "Accessibility",
+      "title": "Reduced Motion Respect",
+      "requirement": "Disable transitions and hover animations when users specify prefers-reduced-motion.",
+      "implementation": "@media (prefers-reduced-motion: reduce) disables transform animations and transitions."
+    }
+  ]
+}

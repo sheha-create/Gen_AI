@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "project": "ReDesignX",
+  "assignment": "BSERC GenAI Internship - Week 2 Project 17",
+  "page_concept": "Event Landing Page - Apex Horizon Summit 2027",
+  "fidelity_pledge": "Every text node in the baseline and redesigned variants must match this inventory word-for-word without addition, deletion, or paraphrasing.",
+  "sections": {
+    "announcement_bar": {
+      "announcement_text": "Registration Open · Global Hybrid Event · October 14–16, 2027 · San Francisco & Virtual"
+    },
+    "navigation": {
+      "brand_name": "Apex Horizon Summit",
+      "nav_links": [
+        "About",
+        "Speakers",
+        "Agenda",
+        "Venue",
+        "Tickets",
+        "Partners"
+      ],
+      "cta_button": "Register Now"
+    },
+    "hero": {
+      "badge": "The Premier Global Gathering for Sustainable Innovation",
+      "heading": "Accelerating the Clean Energy Transition Through Scalable Technology",
+      "subheading": "Join 3,500 visionary engineers, climate scientists, policymakers, and institutional investors for three days of high-impact keynotes, tactical technical workshops, and cross-sector coalition building.",
+      "metrics": [
+        { "value": "3,500+", "label": "Global Attendees" },
+        { "value": "120+", "label": "Keynote Speakers" },
+        { "value": "48", "label": "Technical Sessions" },
+        { "value": "40+", "label": "Participating Nations" }
+      ],
+      "primary_action": "Reserve Your Seat",
+      "secondary_action": "View Conference Schedule"
+    },
+    "about": {
+      "section_badge": "Summit Mission",
+      "section_title": "A Pragmatic Forum for Decarbonization",
+      "paragraphs": [
+        "Apex Horizon Summit was founded on the conviction that reaching global net-zero targets requires pragmatic engineering, capital mobilization, and coordinated public policy. We bring together key decision-makers across renewable energy, grid modernization, industrial decarbonization, and nature-based solutions.",
+        "Our 2027 agenda focuses on real-world deployment challenges: overcoming transmission interconnection bottlenecks, scaling long-duration energy storage, certifying carbon removal integrity, and financing critical infrastructure in emerging markets."
+      ]
+    },
+    "speakers": {
+      "section_badge": "Thought Leaders",
+      "section_title": "Distinguished Keynote Speakers",
+      "items": [
+        {
+          "name": "Dr. Elena Rostova",
+          "role": "Chief Scientist & Director of Energy Systems",
+          "organization": "Pacific Climate Institute",
+          "talk_title": "Next-Generation Perovskite Photovoltaics: Moving from Lab Efficiency to Terawatt Deployment"
+        },
+        {
+          "name": "Marcus Vance",
+          "role": "Managing Partner & Head of Climate Capital",
+          "organization": "Apex Horizons Ventures",
+          "talk_title": "Financing the First-of-a-Kind: De-Risking Deep Tech Industrial Infrastructure"
+        },
+        {
+          "name": "Amina Al-Mansoor",
+          "role": "Senior Grid Strategy Director",
+          "organization": "International Energy Transmission Consortium",
+          "talk_title": "Overcoming Interconnection Queues: AI-Driven Dispatch and HVDC Grid Topologies"
+        },
+        {
+          "name": "David Chen",
+          "role": "Founder and Chief Technology Officer",
+          "organization": "AeroSequest Carbon Technologies",
+          "talk_title": "Direct Air Capture at Gigaton Scale: Energy Footprint and Geological Durability"
+        }
+      ]
+    },
+    "agenda": {
+      "section_badge": "Program Breakdown",
+      "section_title": "Conference Agenda Overview",
+      "days": [
+        {
+          "day_title": "Day 1: Renewable Generation & Power Infrastructure",
+          "schedule": [
+            "08:30 AM – 09:30 AM: Registration, Welcome Breakfast, and Networking",
+            "09:30 AM – 11:00 AM: Opening Keynotes: The State of the Global Clean Energy Transition",
+            "11:30 AM – 01:00 PM: Deep Dive: Modernizing Transmission Grids for Intermittent Power",
+            "02:00 PM – 03:30 PM: Panel: Battery Storage Chemistry Beyond Lithium-Ion",
+            "04:00 PM – 05:30 PM: Showcase: Emerging Clean Tech Startups Pitch Session"
+          ]
+        },
+        {
+          "day_title": "Day 2: Industrial Decarbonization & Clean Fuels",
+          "schedule": [
+            "09:00 AM – 10:30 AM: Keynote: Decarbonizing Heavy Industry: Steel, Cement, and Chemicals",
+            "11:00 AM – 12:30 PM: Technical Workshop: Green Hydrogen Production Economics and Transport",
+            "02:00 PM – 03:30 PM: Case Studies: Direct Air Capture and Carbon Accounting Rigor",
+            "04:00 PM – 05:30 PM: Investor Roundtable: Climate Venture Capital in a Higher-Interest Rate Regime"
+          ]
+        }
+      ]
+    },
+    "venue": {
+      "section_badge": "Destination",
+      "section_title": "Venue & Attendee Logistics",
+      "overview": "Apex Horizon Summit 2027 takes place at the Moscone Convention Center in downtown San Francisco, California. The venue is fully accessible, certified LEED Platinum, and powered entirely by renewable electricity.",
+      "logistics": [
+        "Location: Moscone Convention Center, 747 Howard Street, San Francisco, CA 94103",
+        "Public Transit: Two blocks from Powell Street BART and Muni Metro Station",
+        "Accessibility: Full wheelchair accessibility, assistive listening systems, and live captioning available",
+        "Virtual Option: High-definition livestreaming and interactive Q&A available for virtual ticket holders"
+      ]
+    },
+    "pricing": {
+      "section_badge": "Registration Passes",
+      "section_title": "Registration & Ticket Packages",
+      "tiers": [
+        {
+          "name": "Virtual Access Pass",
+          "price": "$299 USD",
+          "features": [
+            "Full livestream access to all 48 keynote sessions and workshops",
+            "Access to interactive digital Q&A and community channels",
+            "On-demand session recordings for 12 months"
+          ],
+          "cta": "Select Virtual Pass"
+        },
+        {
+          "name": "Standard Delegate Pass",
+          "price": "$899 USD",
+          "features": [
+            "Complete in-person access to all three conference days",
+            "Daily catered networking breakfast, lunch, and coffee breaks",
+            "Admission to opening night reception and partner expo",
+            "On-demand session recordings and speaker presentation slides"
+          ],
+          "cta": "Select Standard Pass"
+        },
+        {
+          "name": "Executive VIP Pass",
+          "price": "$1,699 USD",
+          "features": [
+            "All Standard Delegate privileges plus VIP front-row seating",
+            "Exclusive invitation to Private Speaker & Investor Gala Dinner",
+            "Access to Executive Networking Lounge and private meeting suites",
+            "Concierge registration desk and priority badge pickup"
+          ],
+          "cta": "Select Executive VIP Pass"
+        }
+      ]
+    },
+    "partners": {
+      "section_badge": "Ecosystem Collaboration",
+      "section_title": "Summit Partners & Supporters",
+      "list": [
+        "Global Clean Energy Council",
+        "Pacific Power & Transmission",
+        "TerraForm Renewables Group",
+        "Northwest Carbon Institute",
+        "Sustainable Capital Alliance"
+      ]
+    },
+    "testimonial": {
+      "section_badge": "Delegate Voices",
+      "section_title": "What Past Attendees Say",
+      "quote": "Apex Horizon is the single most valuable climate conference of the year. The technical depth of the presentations and the caliber of attendees make it an essential gathering for anyone serious about climate scale.",
+      "attribution": "Dr. Sarah Lindqvist, Vice President of Technology, Nordic Clean Grid Consortium"
+    },
+    "newsletter": {
+      "section_badge": "Direct Dispatch",
+      "section_title": "Stay Informed on Speaker Announcements",
+      "subtitle": "Subscribe to our bi-weekly dispatch for exclusive agenda updates, research whitepapers, and early registration reminders.",
+      "input_placeholder": "Enter your corporate email address",
+      "cta_button": "Subscribe to Updates"
+    },
+    "footer": {
+      "brand": "Apex Horizon Summit 2027",
+      "description": "Convening world leaders in clean technology, energy transition, and climate finance.",
+      "copyright": "© 2027 Apex Horizon Summit Organization. All rights reserved.",
+      "links": [
+        "Privacy Policy",
+        "Terms of Attendance",
+        "Code of Conduct",
+        "Contact Operations Team"
+      ]
+    }
+  }
+}

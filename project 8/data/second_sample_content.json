@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "project": "ReDesignX",
+  "assignment": "BSERC GenAI Internship - Week 2 Project 17",
+  "page_concept": "Café & Coffee Roastery - Lumina Artisan Roasters",
+  "fidelity_pledge": "Every text node in the baseline and redesigned variants must match this inventory word-for-word without addition, deletion, or paraphrasing.",
+  "sections": {
+    "announcement_bar": {
+      "announcement_text": "Free Nationwide Shipping on Whole Bean Orders Over $45 · Fresh Roasted Every Tuesday & Friday"
+    },
+    "navigation": {
+      "brand_name": "Lumina Artisan Roasters",
+      "nav_links": [
+        "Origins",
+        "Coffees",
+        "Menu",
+        "Brewing",
+        "Visit",
+        "Wholesale"
+      ],
+      "cta_button": "Order Beans Online"
+    },
+    "hero": {
+      "badge": "Direct Trade · Small Batch Roasting · Sustainable Sourcing",
+      "heading": "Crafting Extraordinary Coffee Experiences From Farm to Cup",
+      "subheading": "We partner directly with family-owned micro-lots around the world to roast exceptional specialty coffees with transparent origins and meticulous craft.",
+      "metrics": [
+        { "value": "100%", "label": "Direct Trade Certified" },
+        { "value": "88+", "label": "Specialty Cup Score Average" },
+        { "value": "14", "label": "Single-Origin Offerings" },
+        { "value": "Zero", "label": "Waste Packaging Guarantee" }
+      ],
+      "primary_action": "Explore Our Beans",
+      "secondary_action": "Read Roasting Notes"
+    },
+    "about": {
+      "section_badge": "Our Philosophy",
+      "section_title": "Radical Transparency in Every Roast",
+      "paragraphs": [
+        "Lumina was founded in 2019 with a simple mission: celebrate the tireless producers behind the world's most nuanced coffees. By cutting out commodity middlemen, we pay an average of 240% above fair trade minimums directly to harvesting cooperatives.",
+        "Every batch is roast-profiled on our vintage cast-iron drum roasters to unlock distinct fruit, floral, and chocolate notes inherent to the varietal and terroir."
+      ]
+    },
+    "featured_products": {
+      "section_badge": "Current Harvest",
+      "section_title": "Featured Single-Origin Selections",
+      "items": [
+        {
+          "name": "Ethiopia Yirgacheffe Gedeb",
+          "notes": "Jasmine blossom, bergamot, candied peach, and wild honey finish.",
+          "process": "Washed heirloom varieties from 2,100 meters elevation.",
+          "price": "$22.00 USD"
+        },
+        {
+          "name": "Colombia Huila Pink Bourbon",
+          "notes": "Red currant, pink guava, cane sugar syrup, and crisp malic acidity.",
+          "process": "Anaerobic thermal shock fermentation by the Rivera family.",
+          "price": "$24.50 USD"
+        },
+        {
+          "name": "Guatemala Antigua Los Volcanes",
+          "notes": "Dark cacao nibs, roasted hazelnut, dried fig, and rich buttery body.",
+          "process": "Sun-dried on raised African beds in volcanic soil microclimate.",
+          "price": "$20.00 USD"
+        }
+      ]
+    },
+    "cafe_menu": {
+      "section_badge": "In-Store Experience",
+      "section_title": "Tasting Room Espresso & Pour-Over Bar",
+      "categories": [
+        {
+          "category_name": "Espresso Bar",
+          "items": [
+            "Double Espresso (Single Origin Rotator) - $4.00",
+            "Cortado with Organic Whole Milk or Oat - $4.75",
+            "Flat White with Micro-Foam Texture - $5.25",
+            "Single-Origin Vanilla Bean Latte - $6.00"
+          ]
+        },
+        {
+          "category_name": "Filter & Hand Pour",
+          "items": [
+            "Kalita Wave Manual Pour-Over - $5.50",
+            "Slow Cold Drip Tower (24-Hour Extraction) - $5.75",
+            "Cascara Tea Infusion with Citrus - $4.50",
+            "Batch Brew of the Day - $3.75"
+          ]
+        }
+      ]
+    },
+    "visit": {
+      "section_badge": "Flagship Location",
+      "section_title": "Visit Our Roastery & Espresso Bar",
+      "overview": "Located in the historic arts district, our flagship space combines an active roasting facility, education lab, and serene coffee bar.",
+      "logistics": [
+        "Address: 412 Craftworks Alley, Warehouse District, Portland, OR 97209",
+        "Hours: Monday to Friday 7:00 AM – 5:00 PM, Weekends 8:00 AM – 6:00 PM",
+        "Public Cuppings: Every Saturday morning at 10:00 AM (Reservations required)",
+        "Accessibility: Step-free entrance, gender-neutral restrooms, and quiet outdoor patio"
+      ]
+    },
+    "newsletter": {
+      "section_badge": "Roaster Dispatches",
+      "section_title": "Join the Lumina Tasting Club",
+      "subtitle": "Receive monthly reserve lot alerts, brewing tutorials, and 10% off your first coffee order.",
+      "input_placeholder": "Enter your email address",
+      "cta_button": "Join Tasting Club"
+    },
+    "footer": {
+      "brand": "Lumina Artisan Roasters",
+      "description": "Specialty small-batch coffee roasters committed to ethical sourcing and sensory craftsmanship.",
+      "copyright": "© 2027 Lumina Artisan Roasters LLC. All rights reserved.",
+      "links": [
+        "Privacy Policy",
+        "Shipping & Returns",
+        "Wholesale Inquiries",
+        "Contact Roastery Team"
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "redesignx-project-17",
+  "version": "1.0.0",
+  "description": "ReDesignX: Same Page, New Design - BSERC GenAI Internship Week 2 Project 17",
+  "main": "index.html",
+  "scripts": {
+    "test": "node scripts/verify_content.mjs",
+    "verify": "node scripts/verify_content.mjs",
+    "start": "python -m http.server 8080"
+  },
+  "keywords": [
+    "design-system",
+    "design-skill",
+    "redesign",
+    "accessibility",
+    "content-preservation",
+    "bserc"
+  ],
+  "author": "BSERC GenAI Intern",
+  "license": "MIT",
+  "type": "module"
+}
