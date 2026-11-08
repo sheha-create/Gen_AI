@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart ID Photo Lab - Test Suite</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; }
+    h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+    .test-group { margin-bottom: 2rem; }
+    .test-group h2 { font-size: 1.1rem; color: #38bdf8; margin-bottom: 0.5rem; border-bottom: 1px solid #334155; padding-bottom: 0.3rem; }
+    .test { padding: 0.4rem 0.75rem; font-size: 0.85rem; border-left: 3px solid #334155; margin-bottom: 0.25rem; }
+    .test.pass { border-color: #10b981; color: #34d399; }
+    .test.fail { border-color: #ef4444; color: #f87171; }
+    .summary { margin-top: 1.5rem; padding: 1rem; background: #1e293b; border-radius: 8px; font-size: 1rem; }
+    .summary.all-pass { border: 2px solid #10b981; }
+    .summary.has-fail { border: 2px solid #ef4444; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Smart ID Photo Lab — Automated Test Suite</h1>
+  <div id="test-output"></div>
+  <div id="test-summary"></div>
+
+  <script type="module">
+    import { VERIFIED_PRESETS, getAllPresets, getPresetById, validateCustomPresetData } from '../js/presets.js';
+    import { compressCanvasToTargetKB } from '../js/compressor.js';
+    import { ComplianceValidator } from '../js/validator.js';
+
+    const output = document.getElementById('test-output');
+    const summaryEl = document.getElementById('test-summary');
+    let passed = 0;
+    let failed = 0;
+
+    function group(name) {
+      const div = document.createElement('div');
+      div.className = 'test-group';
+      div.innerHTML = `<h2>${name}</h2>`;
+      output.appendChild(div);
+      return div;
+    }
+
+    function test(container, name, fn) {
+      try {
+        fn();
+        passed++;
+        const div = document.createElement('div');
+        div.className = 'test pass';
+        div.textContent = `✓ ${name}`;
+        container.appendChild(div);
+      } catch (err) {
+        failed++;
+        const div = document.createElement('div');
+        div.className = 'test fail';
+        div.textContent = `✕ ${name}: ${err.message}`;
+        container.appendChild(div);
+      }
+    }
+
+    function assertEqual(actual, expected, msg = '') {
+      if (actual !== expected) {
+        throw new Error(`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}. ${msg}`);
+      }
+    }
+
+    function assertTrue(val, msg = '') {
+      if (!val) throw new Error(`Assertion failed. ${msg}`);
+    }
+
+    // ========== PRESET TESTS ==========
+    const g1 = group('FR-01 / FR-04: Verified Preset Data & Selection');
+
+    test(g1, 'VERIFIED_PRESETS is a non-empty array', () => {
+      assertTrue(Array.isArray(VERIFIED_PRESETS));
+      assertTrue(VERIFIED_PRESETS.length >= 5, `Expected ≥5 presets, got ${VERIFIED_PRESETS.length}`);
+    });
+
+    test(g1, 'Each preset has required fields: id, name, photo.width, photo.height, photo.maxKB', () => {
+      for (const p of VERIFIED_PRESETS) {
+        assertTrue(!!p.id, `Missing id`);
+        assertTrue(!!p.name, `Missing name on ${p.id}`);
+        assertTrue(p.photo.width > 0, `Invalid photo.width on ${p.id}`);
+        assertTrue(p.photo.height > 0, `Invalid photo.height on ${p.id}`);
+        assertTrue(p.photo.maxKB > 0, `Invalid photo.maxKB on ${p.id}`);
+      }
+    });
+
+    test(g1, 'UPSC preset has correct 350x350 dimensions', () => {
+      const p = getPresetById('upsc_otr');
+      assertEqual(p.photo.width, 350);
+      assertEqual(p.photo.height, 350);
+      assertEqual(p.photo.maxKB, 300);
+    });
+
+    test(g1, 'SSC preset has correct 200x230 dimensions', () => {
+      const p = getPresetById('ssc_cgl');
+      assertEqual(p.photo.width, 200);
+      assertEqual(p.photo.height, 230);
+      assertEqual(p.photo.maxKB, 50);
+    });
+
+    test(g1, 'GATE preset has correct 480x640 dimensions', () => {
+      const p = getPresetById('gate_exam');
+      assertEqual(p.photo.width, 480);
+      assertEqual(p.photo.height, 640);
+    });
+
+    test(g1, 'US Visa preset has 600x600 1:1 square requirement', () => {
+      const p = getPresetById('us_visa');
+      assertEqual(p.photo.width, 600);
+      assertEqual(p.photo.height, 600);
+      assertEqual(p.photo.aspectRatio, 1);
+    });
+
+    test(g1, 'getAllPresets() includes verified presets', () => {
+      const all = getAllPresets();
+      assertTrue(all.length >= VERIFIED_PRESETS.length);
+    });
+
+    test(g1, 'getPresetById returns correct preset', () => {
+      const p = getPresetById('ibps_bank');
+      assertEqual(p.name, 'IBPS PO / Clerk / SO');
+    });
+
+    test(g1, 'getPresetById falls back to first preset for unknown ID', () => {
+      const p = getPresetById('nonexistent_xyz');
+      assertEqual(p.id, VERIFIED_PRESETS[0].id);
+    });
+
+    // ========== CUSTOM PRESET VALIDATION TESTS ==========
+    const g2 = group('FR-04: Custom Preset Validation');
+
+    test(g2, 'Valid custom preset data passes validation', () => {
+      const result = validateCustomPresetData({
+        name: 'Test Preset',
+        photoWidth: 200,
+        photoHeight: 300,
+        photoMaxKB: 100,
+        photoMinKB: 10,
+        includeSignature: false
+      });
+      assertTrue(result.isValid, result.errors?.join(', '));
+    });
+
+    test(g2, 'Empty name fails validation', () => {
+      const result = validateCustomPresetData({
+        name: '',
+        photoWidth: 200,
+        photoHeight: 300,
+        photoMaxKB: 100
+      });
+      assertTrue(!result.isValid);
+      assertTrue(result.errors.some(e => e.includes('name')));
+    });
+
+    test(g2, 'Name exceeding 50 chars fails', () => {
+      const result = validateCustomPresetData({
+        name: 'A'.repeat(51),
+        photoWidth: 200,
+        photoHeight: 300,
+        photoMaxKB: 100
+      });
+      assertTrue(!result.isValid);
+    });
+
+    test(g2, 'Photo width below 50 fails', () => {
+      const result = validateCustomPresetData({
+        name: 'Test',
+        photoWidth: 20,
+        photoHeight: 300,
+        photoMaxKB: 100
+      });
+      assertTrue(!result.isValid);
+    });
+
+    test(g2, 'Min KB >= Max KB fails validation', () => {
+      const result = validateCustomPresetData({
+        name: 'Test',
+        photoWidth: 200,
+        photoHeight: 300,
+        photoMaxKB: 50,
+        photoMinKB: 60
+      });
+      assertTrue(!result.isValid);
+      assertTrue(result.errors.some(e => e.includes('minimum')));
+    });
+
+    test(g2, 'Signature fields validated when includeSignature is true', () => {
+      const result = validateCustomPresetData({
+        name: 'Test',
+        photoWidth: 200,
+        photoHeight: 300,
+        photoMaxKB: 100,
+        includeSignature: true,
+        sigWidth: 10,
+        sigHeight: 60,
+        sigMaxKB: 30
+      });
+      assertTrue(!result.isValid);
+      assertTrue(result.errors.some(e => e.includes('Signature width')));
+    });
+
+    // ========== COMPRESSION ENGINE TESTS ==========
+    const g3 = group('FR-06 / Section 11: Compression Engine (Binary Search)');
+
+    test(g3, 'Compress a 200x200 canvas to <= 50 KB (JPEG)', async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 200;
+      canvas.height = 200;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#4488ff';
+      ctx.fillRect(0, 0, 200, 200);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(50, 50, 100, 100);
+
+      const result = await compressCanvasToTargetKB(canvas, { maxKB: 50, format: 'image/jpeg' });
+      assertTrue(result.success, result.message);
+      assertTrue(result.kb <= 50, `Size ${result.kb} KB exceeds 50 KB`);
+      assertTrue(result.blob instanceof Blob);
+    });
+
+    test(g3, 'Compress a 400x400 detailed canvas to <= 20 KB', async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 400;
+      canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+      // Draw some "complex" patterns
+      for (let i = 0; i < 400; i += 10) {
+        ctx.fillStyle = `hsl(${i}, 70%, 50%)`;
+        ctx.fillRect(i, 0, 10, 400);
+      }
+
+      const result = await compressCanvasToTargetKB(canvas, { maxKB: 20, format: 'image/jpeg' });
+      assertTrue(result.success, result.message);
+      assertTrue(result.kb <= 20, `Size ${result.kb} KB exceeds 20 KB`);
+      assertTrue(result.iterations >= 1);
+    });
+
+    test(g3, 'Compression history records iteration details', async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      canvas.height = 300;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ff5500';
+      ctx.fillRect(0, 0, 300, 300);
+
+      const result = await compressCanvasToTargetKB(canvas, { maxKB: 15, format: 'image/jpeg' });
+      assertTrue(Array.isArray(result.history));
+      assertTrue(result.history.length >= 1);
+      assertTrue(typeof result.history[0].quality === 'number');
+      assertTrue(typeof result.history[0].sizeBytes === 'number');
+    });
+
+    test(g3, 'PNG format returns lossless blob', async () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 50;
+      canvas.height = 50;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#00aa00';
+      ctx.fillRect(0, 0, 50, 50);
+
+      const result = await compressCanvasToTargetKB(canvas, { maxKB: 500, format: 'image/png' });
+      assertEqual(result.format, 'image/png');
+      assertTrue(result.quality === 1.0);
+    });
+
+    // ========== COMPLIANCE VALIDATOR TESTS ==========
+    const g4 = group('FR-08 / Section 12: Technical Compliance Validator');
+
+    test(g4, 'Perfect photo output passes all rules for UPSC', () => {
+      const preset = getPresetById('upsc_otr');
+      const result = ComplianceValidator.validatePhoto(
+        { dimensions: { width: 350, height: 350 }, kb: 85, bytes: 87040, format: 'image/jpeg' },
+        preset
+      );
+      assertEqual(result.overallStatus, 'PASS');
+      assertTrue(result.failedCount === 0);
+    });
+
+    test(g4, 'Wrong dimensions fails compliance', () => {
+      const preset = getPresetById('upsc_otr');
+      const result = ComplianceValidator.validatePhoto(
+        { dimensions: { width: 400, height: 350 }, kb: 85, bytes: 87040, format: 'image/jpeg' },
+        preset
+      );
+      assertEqual(result.overallStatus, 'FAIL');
+      assertTrue(result.failedCount >= 1);
+    });
+
+    test(g4, 'Over max KB fails compliance', () => {
+      const preset = getPresetById('ssc_cgl');
+      const result = ComplianceValidator.validatePhoto(
+        { dimensions: { width: 200, height: 230 }, kb: 60, bytes: 61440, format: 'image/jpeg' },
+        preset
+      );
+      assertTrue(result.rules.some(r => r.id === 'max_file_size' && r.status === 'FAIL'));
+    });
+
+    test(g4, 'Below min KB triggers WARNING', () => {
+      const preset = getPresetById('upsc_otr');
+      const result = ComplianceValidator.validatePhoto(
+        { dimensions: { width: 350, height: 350 }, kb: 5, bytes: 5120, format: 'image/jpeg' },
+        preset
+      );
+      assertTrue(result.rules.some(r => r.id === 'min_file_size' && r.status === 'WARNING'));
+    });
+
+    test(g4, 'Signature validation passes with correct dimensions', () => {
+      const preset = getPresetById('ssc_cgl');
+      const result = ComplianceValidator.validateSignature(
+        { dimensions: { width: 140, height: 60 }, kb: 15, bytes: 15360, format: 'image/jpeg' },
+        preset
+      );
+      assertEqual(result.overallStatus, 'PASS');
+    });
+
+    test(g4, 'Signature validation fails with wrong height', () => {
+      const preset = getPresetById('ssc_cgl');
+      const result = ComplianceValidator.validateSignature(
+        { dimensions: { width: 140, height: 100 }, kb: 15, bytes: 15360, format: 'image/jpeg' },
+        preset
+      );
+      assertEqual(result.overallStatus, 'FAIL');
+    });
+
+    test(g4, 'Optional signature preset returns PASS with 0 rules', () => {
+      const preset = getPresetById('us_visa');
+      const result = ComplianceValidator.validateSignature(
+        { dimensions: { width: 600, height: 300 }, kb: 50, bytes: 51200, format: 'image/jpeg' },
+        preset
+      );
+      assertEqual(result.overallStatus, 'PASS');
+      assertEqual(result.totalRules, 0);
+    });
+
+    test(g4, 'Source resolution warning when original is smaller than target', () => {
+      const preset = getPresetById('us_visa');
+      const result = ComplianceValidator.validatePhoto(
+        { dimensions: { width: 600, height: 600 }, kb: 100, bytes: 102400, format: 'image/jpeg' },
+        preset,
+        { width: 300, height: 300 }
+      );
+      assertTrue(result.rules.some(r => r.id === 'resolution_quality' && r.status === 'WARNING'));
+    });
+
+    test(g4, 'Source resolution PASS when original is larger', () => {
+      const preset = getPresetById('upsc_otr');
+      const result = ComplianceValidator.validatePhoto(
+        { dimensions: { width: 350, height: 350 }, kb: 100, bytes: 102400, format: 'image/jpeg' },
+        preset,
+        { width: 2400, height: 3200 }
+      );
+      assertTrue(result.rules.some(r => r.id === 'resolution_quality' && r.status === 'PASS'));
+    });
+
+    // ========== SUMMARY ==========
+    // Wait for async tests
+    await new Promise(r => setTimeout(r, 500));
+
+    const total = passed + failed;
+    summaryEl.className = `summary ${failed === 0 ? 'all-pass' : 'has-fail'}`;
+    summaryEl.innerHTML = `
+      <strong>${failed === 0 ? '🎉 ALL TESTS PASSED' : '⚠️ SOME TESTS FAILED'}</strong><br>
+      ✓ Passed: ${passed} / ${total}<br>
+      ${failed > 0 ? `✕ Failed: ${failed} / ${total}` : ''}
+    `;
+  </script>
+</body>
+</html>

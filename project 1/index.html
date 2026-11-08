@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart ID Photo Lab | Offline-First Form Photo & Signature Studio</title>
+  <meta name="description" content="Offline-first browser studio to crop, level, and compress photos and signatures for UPSC, SSC, GATE, IBPS, and custom application forms.">
+  <meta name="theme-color" content="#0b0f19">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Offline Privacy Banner -->
+  <div class="offline-banner" role="status">
+    <span>🛡️ <strong>100% Client-Side & Offline-Ready</strong> — Your photos and signatures never leave your device.</span>
+  </div>
+
+  <div class="container">
+    <!-- Main App Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-icon" aria-hidden="true">📸</div>
+        <div>
+          <h1 class="brand-title">Smart ID Photo Lab</h1>
+          <p class="brand-subtitle">BSERC GenAI Internship · Week 2 Project 2 · Official Form Photo & Signature Studio</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="privacy-badge" title="No network transmission required. Runs locally in your browser.">
+          <span class="privacy-pulse" aria-hidden="true"></span>
+          <span>Offline Ready / Local Sandbox</span>
+        </div>
+        <button type="button" id="btn-load-sample" class="btn btn-secondary btn-sm" title="Quickly load sample photo and signature for testing">
+          ⚡ Load Sample Data
+        </button>
+        <button type="button" id="btn-reset-all" class="btn btn-ghost btn-sm" title="Clear all uploads and reset studio">
+          ↺ Reset All
+        </button>
+      </div>
+    </header>
+
+    <!-- Preset Selection Card -->
+    <section class="preset-card" aria-labelledby="preset-heading">
+      <div class="preset-header">
+        <div>
+          <h2 id="preset-heading" class="preset-title">Application Preset & Target Rules</h2>
+          <p id="preset-desc" class="brand-subtitle" style="margin-top:2px;">Select an official verified exam/recruitment form or create your own custom specifications.</p>
+        </div>
+        <div class="preset-selectors">
+          <select id="preset-select" class="select-input" aria-label="Select form preset">
+            <!-- Populated dynamically by presets.js -->
+          </select>
+          <button type="button" id="btn-open-custom-modal" class="btn btn-primary btn-sm">
+            + New Custom Preset
+          </button>
+          <button type="button" id="btn-delete-custom" class="btn btn-ghost btn-sm text-danger hidden" title="Delete this custom preset">
+            🗑 Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Preset Metrics Summary -->
+      <div class="preset-details-grid" id="preset-metrics-summary">
+        <div class="preset-metric">
+          <span class="preset-metric-label">Photo Target</span>
+          <span class="preset-metric-value" id="summary-photo-dims">350 × 350 px</span>
+        </div>
+        <div class="preset-metric">
+          <span class="preset-metric-label">Photo Size Limit</span>
+          <span class="preset-metric-value" id="summary-photo-kb">20 KB – 300 KB</span>
+        </div>
+        <div class="preset-metric">
+          <span class="preset-metric-label">Signature Target</span>
+          <span class="preset-metric-value" id="summary-sig-dims">350 × 350 px (≤ 300 KB)</span>
+        </div>
+        <div class="preset-metric">
+          <span class="preset-metric-label">Format Required</span>
+          <span class="preset-metric-value" id="summary-format">JPEG (.jpg)</span>
+        </div>
+        <div class="preset-metric">
+          <span class="preset-metric-label">Official Source Notice</span>
+          <span class="preset-metric-value">
+            <a href="#" target="_blank" rel="noopener noreferrer" id="summary-source-link" class="preset-source-link">
+              Verified Portal ↗
+            </a>
+            <span id="summary-date-checked" style="font-size:0.75rem; color:var(--text-muted); display:block; margin-top:2px;"></span>
+          </span>
+        </div>
+      </div>
+
+      <div id="preset-guidelines-box" style="margin-top:0.75rem; font-size:0.8rem; color:#cbd5e1; background:rgba(255,255,255,0.03); padding:0.5rem 0.75rem; border-radius:var(--radius-sm); border-left:3px solid var(--accent-light);">
+        <strong>Background & Guidelines:</strong> <span id="preset-guidelines-text">Plain light or white background; face must cover 3/4th (approx. 75%) of the photo.</span>
+      </div>
+    </section>
+
+    <!-- Studio Navigation Tabs (Photo vs Signature) -->
+    <nav class="tabs-nav" aria-label="Studio Workspaces">
+      <button type="button" id="tab-photo-btn" class="tab-btn active" data-tab="tab-photo">
+        📷 1. Photograph Studio
+      </button>
+      <button type="button" id="tab-sig-btn" class="tab-btn" data-tab="tab-sig">
+        ✍️ 2. Signature Studio
+      </button>
+      <button type="button" id="tab-export-btn" class="tab-btn" data-tab="tab-export">
+        📊 3. Compliance & Downloads
+      </button>
+    </nav>
+
+    <!-- Main Workflow Panes -->
+    <main style="margin-top: 1rem;">
+      
+      <!-- TAB 1: PHOTOGRAPH STUDIO -->
+      <section id="tab-photo" class="tab-pane active" aria-labelledby="tab-photo-btn">
+        <div class="studio-grid">
+          
+          <!-- Left Column: Upload & Crop Canvas -->
+          <div class="card">
+            <div class="card-title">
+              <span>Photo Upload & Interactive Crop</span>
+              <span id="photo-file-status" class="privacy-badge" style="background:transparent; border-color:var(--border-color); color:var(--text-muted);">
+                Awaiting Upload
+              </span>
+            </div>
+
+            <!-- Upload Area -->
+            <div id="photo-dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload photo. Click or drag and drop.">
+              <div class="dropzone-icon">📁</div>
+              <div class="dropzone-title">Click or Drag & Drop Photograph</div>
+              <div class="dropzone-desc">Accepts JPG, PNG, WEBP from your local camera or storage</div>
+              <input type="file" id="photo-file-input" accept="image/jpeg,image/png,image/webp" style="display:none;" />
+            </div>
+
+            <div id="photo-chip" class="file-chip hidden">
+              <span id="photo-chip-name" style="font-weight:600;">image.jpg</span>
+              <span id="photo-chip-meta" style="color:var(--text-muted);">2400×3200 px · 1.8 MB</span>
+              <button type="button" id="photo-btn-change" class="btn btn-ghost btn-sm" style="padding:2px 6px;">Replace</button>
+            </div>
+
+            <!-- Canvas Viewport -->
+            <div class="canvas-wrapper">
+              <canvas id="photo-crop-canvas" class="canvas-viewport"></canvas>
+            </div>
+
+            <!-- Face Guide Legend & Positioning Disclaimer -->
+            <div class="face-guide-badge" role="note">
+              <span>ℹ️</span>
+              <div>
+                <strong>Visual Positioning Guide:</strong> Align eyes with the amber eye-line and center the face inside the guide contour.
+                <em style="display:block; font-size:0.72rem; opacity:0.85;">This is a visual positioning aid only, not an official biometric approval or verification.</em>
+              </div>
+            </div>
+
+            <!-- Canvas Editing Toolbar -->
+            <div class="toolbar">
+              <div class="tool-group">
+                <button type="button" id="btn-rotate-left" class="btn btn-secondary btn-sm" title="Rotate 90 degrees counter-clockwise">⟲ 90°</button>
+                <button type="button" id="btn-rotate-right" class="btn btn-secondary btn-sm" title="Rotate 90 degrees clockwise">⟳ 90°</button>
+                <button type="button" id="btn-flip-h" class="btn btn-secondary btn-sm" title="Flip Horizontally">⇄ Flip</button>
+                <button type="button" id="btn-reset-crop" class="btn btn-ghost btn-sm" title="Reset crop position and zoom">↺ Reset</button>
+              </div>
+
+              <div class="tool-group">
+                <label for="slider-fine-angle" class="tool-label">Level Tilt:</label>
+                <input type="range" id="slider-fine-angle" min="-30" max="30" value="0" step="0.5" style="width:90px;" title="Fine tilt leveling adjustment" />
+                <span id="label-fine-angle" style="font-size:0.75rem; width:28px; text-align:right;">0°</span>
+              </div>
+
+              <div class="tool-group">
+                <label style="display:inline-flex; align-items:center; gap:0.35rem; font-size:0.78rem; cursor:pointer;">
+                  <input type="checkbox" id="check-face-guide" checked />
+                  <span>Face Guide</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Live Output & Compression Details -->
+          <div class="card">
+            <div class="card-title">
+              <span>Compressed Output & Inspection</span>
+              <span id="photo-compress-badge" class="status-badge pass hidden">Compressed</span>
+            </div>
+
+            <!-- Compression Stats Summary -->
+            <div class="stats-grid">
+              <div class="stat-box">
+                <div class="stat-label">Output Dims</div>
+                <div class="stat-val" id="stat-output-dims">---</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">Actual Size</div>
+                <div class="stat-val" id="stat-output-kb">--- KB</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">Quality Used</div>
+                <div class="stat-val" id="stat-output-quality">---</div>
+              </div>
+            </div>
+
+            <!-- Before / After Quality Inspector Slider -->
+            <div style="margin-top:0.5rem;">
+              <div style="font-size:0.85rem; font-weight:600; margin-bottom:0.4rem; color:var(--text-secondary);">
+                Before / After Compression Inspection (Split Slider)
+              </div>
+              <div id="comparison-slider-container"></div>
+            </div>
+
+            <!-- Quick Action to Download Photo -->
+            <div class="download-box">
+              <div>
+                <div style="font-weight:600; font-size:0.95rem;">Photo Ready for Submission</div>
+                <div id="photo-download-details" style="font-size:0.8rem; color:var(--text-secondary);">Target size strictly satisfied</div>
+              </div>
+              <a id="btn-download-photo" class="btn btn-primary" download="smart_id_photo.jpg">
+                ⬇ Download Photo (.jpg)
+              </a>
+            </div>
+
+            <div style="text-align:right;">
+              <button type="button" id="btn-goto-sig" class="btn btn-secondary btn-sm">
+                Next: Prepare Signature ➔
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- TAB 2: SIGNATURE STUDIO -->
+      <section id="tab-sig" class="tab-pane hidden" aria-labelledby="tab-sig-btn">
+        <div class="studio-grid">
+          
+          <div class="card">
+            <div class="card-title">
+              <span>Signature Upload & Whitening</span>
+              <span id="sig-file-status" class="privacy-badge" style="background:transparent; border-color:var(--border-color); color:var(--text-muted);">
+                Awaiting Upload
+              </span>
+            </div>
+
+            <!-- Signature Dropzone -->
+            <div id="sig-dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload signature. Click or drag and drop.">
+              <div class="dropzone-icon">✍️</div>
+              <div class="dropzone-title">Click or Drag & Drop Signature Image</div>
+              <div class="dropzone-desc">Sign on white paper with dark pen, photo or scan</div>
+              <input type="file" id="sig-file-input" accept="image/jpeg,image/png,image/webp" style="display:none;" />
+            </div>
+
+            <div id="sig-chip" class="file-chip hidden">
+              <span id="sig-chip-name" style="font-weight:600;">signature.jpg</span>
+              <span id="sig-chip-meta" style="color:var(--text-muted);">1200×500 px · 45 KB</span>
+              <button type="button" id="sig-btn-change" class="btn btn-ghost btn-sm" style="padding:2px 6px;">Replace</button>
+            </div>
+
+            <!-- Signature Canvas -->
+            <div class="canvas-wrapper" style="height:260px;">
+              <canvas id="sig-preview-canvas" width="560" height="200" class="canvas-viewport"></canvas>
+            </div>
+
+            <!-- Signature Enhancement Controls -->
+            <div class="toolbar">
+              <div class="tool-group">
+                <label style="display:inline-flex; align-items:center; gap:0.4rem; font-size:0.8rem; cursor:pointer;">
+                  <input type="checkbox" id="check-sig-threshold" />
+                  <span>Pure White Paper Filter</span>
+                </label>
+              </div>
+
+              <div class="tool-group">
+                <label for="slider-sig-contrast" class="tool-label">Contrast:</label>
+                <input type="range" id="slider-sig-contrast" min="0.8" max="2.2" value="1.2" step="0.1" style="width:90px;" />
+              </div>
+
+              <div class="tool-group">
+                <button type="button" id="btn-sig-invert" class="btn btn-ghost btn-sm">Invert</button>
+                <button type="button" id="btn-sig-reset" class="btn btn-ghost btn-sm">Reset</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Signature Output & Validation -->
+          <div class="card">
+            <div class="card-title">
+              <span>Prepared Signature Output</span>
+              <span id="sig-status-badge" class="status-badge pass hidden">Compliant</span>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-box">
+                <div class="stat-label">Target Dims</div>
+                <div class="stat-val" id="stat-sig-dims">---</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">Actual Size</div>
+                <div class="stat-val" id="stat-sig-kb">--- KB</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">Size Limit</div>
+                <div class="stat-val" id="stat-sig-limit">--- KB</div>
+              </div>
+            </div>
+
+            <div id="sig-preview-box" style="background:#fff; border-radius:var(--radius-md); padding:1rem; display:flex; align-items:center; justify-content:center; min-height:160px; border:1px solid var(--border-color);">
+              <img id="sig-output-img" alt="Prepared Signature Preview" style="max-width:100%; max-height:140px; object-fit:contain;" />
+            </div>
+
+            <div class="download-box">
+              <div>
+                <div style="font-weight:600; font-size:0.95rem;">Download Signature File</div>
+                <div id="sig-download-details" style="font-size:0.8rem; color:var(--text-secondary);">Exact preset dimensions & file size</div>
+              </div>
+              <a id="btn-download-sig" class="btn btn-primary" download="smart_id_signature.jpg">
+                ⬇ Download Signature (.jpg)
+              </a>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <button type="button" id="btn-back-photo" class="btn btn-ghost btn-sm">
+                ⬅ Back to Photo
+              </button>
+              <button type="button" id="btn-goto-export" class="btn btn-secondary btn-sm">
+                Review Compliance Report ➔
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- TAB 3: COMPLIANCE REPORT & EXPORTS -->
+      <section id="tab-export" class="tab-pane hidden" aria-labelledby="tab-export-btn">
+        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+          
+          <!-- Master Compliance Card -->
+          <div class="validation-card">
+            <div class="validation-header">
+              <div>
+                <h3 style="font-size:1.1rem; font-weight:700;">Technical Compliance Report</h3>
+                <p style="font-size:0.8rem; color:var(--text-secondary);">Automated rule validation against selected form portal specifications</p>
+              </div>
+              <div id="master-compliance-badge" class="status-badge pass">
+                PASS: 100% Compliant
+              </div>
+            </div>
+
+            <!-- Rules Table -->
+            <div class="rules-list" id="compliance-rules-container">
+              <!-- Dynamically populated by validator.js -->
+            </div>
+          </div>
+
+          <!-- Dual Download Actions Card -->
+          <div class="card" style="background:linear-gradient(135deg, rgba(19, 27, 46, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);">
+            <h3 style="font-size:1.1rem; font-weight:700;">Download Final Verified Assets</h3>
+            <p style="font-size:0.85rem; color:var(--text-secondary);">
+              Inspect downloaded file properties on your operating system (Right-click ➔ Properties / Get Info) to confirm actual KB file size and pixel dimensions match the report above.
+            </p>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1rem; margin-top:0.5rem;">
+              
+              <!-- Photo Download Tile -->
+              <div style="background:var(--bg-card); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); display:flex; flex-direction:column; justify-content:space-between; gap:1rem;">
+                <div>
+                  <div style="font-weight:600; font-size:1rem; margin-bottom:0.25rem;">📷 Application Photograph</div>
+                  <div id="tile-photo-metrics" style="font-size:0.82rem; color:var(--text-secondary);">Dimension: 350×350 px · Format: JPG</div>
+                </div>
+                <a id="btn-download-photo-master" class="btn btn-primary" download="smart_id_photo.jpg">
+                  ⬇ Download Photo (.jpg)
+                </a>
+              </div>
+
+              <!-- Signature Download Tile -->
+              <div style="background:var(--bg-card); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); display:flex; flex-direction:column; justify-content:space-between; gap:1rem;">
+                <div>
+                  <div style="font-weight:600; font-size:1rem; margin-bottom:0.25rem;">✍️ Application Signature</div>
+                  <div id="tile-sig-metrics" style="font-size:0.82rem; color:var(--text-secondary);">Dimension: 350×350 px · Format: JPG</div>
+                </div>
+                <a id="btn-download-sig-master" class="btn btn-primary" download="smart_id_signature.jpg">
+                  ⬇ Download Signature (.jpg)
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal Dialog: Create Custom Preset -->
+  <div id="custom-preset-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="custom-modal-title">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="custom-modal-title" style="font-size:1.1rem; font-weight:700;">Create Custom Form Preset</h3>
+        <button type="button" id="btn-close-modal" class="btn btn-ghost btn-sm" aria-label="Close dialog">✕</button>
+      </div>
+      <form id="custom-preset-form">
+        <div class="modal-body">
+          <div id="custom-form-errors" class="alert-box alert-danger hidden" role="alert"></div>
+
+          <div class="form-group">
+            <label for="cp-name" class="form-label">Preset Name *</label>
+            <input type="text" id="cp-name" class="form-input" placeholder="e.g. State Police Recruitment 2025" required maxlength="50" />
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="cp-org" class="form-label">Organization / Board</label>
+              <input type="text" id="cp-org" class="form-input" placeholder="e.g. State Examination Board" />
+            </div>
+            <div class="form-group">
+              <label for="cp-url" class="form-label">Official Notice URL</label>
+              <input type="url" id="cp-url" class="form-input" placeholder="https://example.gov/notice.pdf" />
+            </div>
+          </div>
+
+          <hr style="border:none; border-top:1px solid var(--border-color); margin:0.25rem 0;" />
+          <div style="font-weight:600; font-size:0.9rem; color:var(--accent-light);">Photograph Specifications</div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="cp-photo-w" class="form-label">Width (px) *</label>
+              <input type="number" id="cp-photo-w" class="form-input" min="50" max="8000" placeholder="350" required />
+            </div>
+            <div class="form-group">
+              <label for="cp-photo-h" class="form-label">Height (px) *</label>
+              <input type="number" id="cp-photo-h" class="form-input" min="50" max="8000" placeholder="350" required />
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="cp-photo-maxkb" class="form-label">Max File Size (KB) *</label>
+              <input type="number" id="cp-photo-maxkb" class="form-input" min="5" max="50000" placeholder="100" required />
+            </div>
+            <div class="form-group">
+              <label for="cp-photo-minkb" class="form-label">Min File Size (KB, optional)</label>
+              <input type="number" id="cp-photo-minkb" class="form-input" min="0" max="50000" placeholder="20" />
+            </div>
+          </div>
+
+          <hr style="border:none; border-top:1px solid var(--border-color); margin:0.25rem 0;" />
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-weight:600; font-size:0.9rem; color:var(--accent-light);">Signature Specifications</span>
+            <label style="display:inline-flex; align-items:center; gap:0.4rem; font-size:0.8rem; cursor:pointer;">
+              <input type="checkbox" id="cp-include-sig" checked />
+              <span>Include Signature</span>
+            </label>
+          </div>
+
+          <div id="cp-sig-fields" class="form-grid-2">
+            <div class="form-group">
+              <label for="cp-sig-w" class="form-label">Signature Width (px)</label>
+              <input type="number" id="cp-sig-w" class="form-input" min="40" max="8000" value="140" />
+            </div>
+            <div class="form-group">
+              <label for="cp-sig-h" class="form-label">Signature Height (px)</label>
+              <input type="number" id="cp-sig-h" class="form-input" min="20" max="8000" value="60" />
+            </div>
+            <div class="form-group">
+              <label for="cp-sig-maxkb" class="form-label">Sig Max Size (KB)</label>
+              <input type="number" id="cp-sig-maxkb" class="form-input" min="5" max="50000" value="30" />
+            </div>
+            <div class="form-group">
+              <label for="cp-sig-minkb" class="form-label">Sig Min Size (KB)</label>
+              <input type="number" id="cp-sig-minkb" class="form-input" min="0" max="50000" value="10" />
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-custom" class="btn btn-ghost">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Apply Preset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Service Worker Registration for Complete Offline Capability -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+          console.log('Smart ID Photo Lab ServiceWorker registered offline cache:', reg.scope);
+        }).catch(err => {
+          console.warn('ServiceWorker registration ignored (e.g. file:// mode):', err);
+        });
+      });
+    }
+  </script>
+
+  <!-- Main ES Module Application Script -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
