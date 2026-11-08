@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudyTube Focus Board</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="popup-wrap">
+    <!-- Header -->
+    <div class="popup-header">
+      <div class="popup-logo">📚 StudyTube</div>
+      <button class="popup-dashboard-btn" id="open-dashboard" title="Open Dashboard">⚙ Dashboard</button>
+    </div>
+
+    <!-- Session Status -->
+    <div class="session-card" id="session-card">
+      <div class="session-active" id="session-active" style="display:none">
+        <div class="session-reason-label">Studying:</div>
+        <div class="session-reason" id="session-reason">—</div>
+        <div class="session-countdown-row">
+          <div class="session-countdown" id="session-countdown">60:00</div>
+          <button class="end-session-btn" id="end-session-btn">End Session</button>
+        </div>
+      </div>
+      <div class="session-inactive" id="session-inactive">
+        <div class="session-idle-text">No active session</div>
+        <button class="start-session-mini-btn" id="start-session-mini-btn">▶ Start Session</button>
+      </div>
+    </div>
+
+    <!-- Today's Usage -->
+    <div class="usage-card">
+      <div class="usage-label">Today's YouTube Time</div>
+      <div class="usage-time" id="usage-time">0:00:00</div>
+    </div>
+
+    <!-- Quick Switches -->
+    <div class="switches-card">
+      <div class="switches-title">Distraction Controls</div>
+      <label class="switch-row">
+        <span class="switch-label">🚫 Hide Shorts</span>
+        <div class="toggle-wrap">
+          <input type="checkbox" id="sw-shorts" class="toggle-input" />
+          <div class="toggle-track"></div>
+        </div>
+      </label>
+      <label class="switch-row">
+        <span class="switch-label">🚫 Hide Recommendations</span>
+        <div class="toggle-wrap">
+          <input type="checkbox" id="sw-recs" class="toggle-input" />
+          <div class="toggle-track"></div>
+        </div>
+      </label>
+      <label class="switch-row">
+        <span class="switch-label">💬 Hide Comments</span>
+        <div class="toggle-wrap">
+          <input type="checkbox" id="sw-comments" class="toggle-input" />
+          <div class="toggle-track"></div>
+        </div>
+      </label>
+      <label class="switch-row">
+        <span class="switch-label">🔒 Focus Gate</span>
+        <div class="toggle-wrap">
+          <input type="checkbox" id="sw-gate" class="toggle-input" />
+          <div class="toggle-track"></div>
+        </div>
+      </label>
+    </div>
+
+    <!-- Footer -->
+    <div class="popup-footer">
+      <button class="footer-link" id="open-study-list">📋 Study List</button>
+      <button class="footer-link" id="open-notes-btn">📝 Notes</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

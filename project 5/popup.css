@@ -1,0 +1,209 @@
+/* popup.css */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  width: 320px;
+  min-height: 400px;
+  background: #0f0f0f;
+  color: #fff;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 13px;
+}
+
+.popup-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+}
+
+/* ── Header ──────────────────────────────────── */
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+.popup-logo {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ff4e45;
+  letter-spacing: -0.3px;
+}
+.popup-dashboard-btn {
+  background: transparent;
+  border: 1px solid #333;
+  color: #aaa;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.popup-dashboard-btn:hover { border-color: #aaa; color: #fff; }
+
+/* ── Session Card ────────────────────────────── */
+.session-card {
+  background: #1a1a1a;
+  border: 1px solid #272727;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.session-reason-label {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.session-reason {
+  font-size: 13px;
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+.session-countdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.session-countdown {
+  font-size: 24px;
+  font-weight: 700;
+  font-family: monospace;
+  color: #ff4e45;
+  letter-spacing: 1px;
+}
+.end-session-btn {
+  background: transparent;
+  border: 1px solid #444;
+  color: #aaa;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.end-session-btn:hover { border-color: #ff4e45; color: #ff4e45; }
+
+.session-inactive {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.session-idle-text { color: #666; font-size: 12px; }
+.start-session-mini-btn {
+  background: #ff4e45;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+.start-session-mini-btn:hover { background: #e03d35; }
+
+/* ── Usage Card ──────────────────────────────── */
+.usage-card {
+  background: #1a1a1a;
+  border: 1px solid #272727;
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.usage-label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.usage-time {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: monospace;
+  color: #4caf8b;
+}
+
+/* ── Switches Card ───────────────────────────── */
+.switches-card {
+  background: #1a1a1a;
+  border: 1px solid #272727;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.switches-title {
+  color: #888;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+  cursor: pointer;
+  border-bottom: 1px solid #1e1e1e;
+}
+.switch-row:last-child { border-bottom: none; }
+.switch-label { font-size: 13px; color: #ccc; }
+
+/* Toggle */
+.toggle-wrap { position: relative; }
+.toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-track {
+  width: 36px;
+  height: 20px;
+  background: #333;
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.toggle-input:checked + .toggle-track {
+  background: #ff4e45;
+}
+.toggle-input:checked + .toggle-track::after {
+  left: 18px;
+}
+
+/* ── Footer ──────────────────────────────────── */
+.popup-footer {
+  display: flex;
+  gap: 8px;
+}
+.footer-link {
+  flex: 1;
+  background: #1a1a1a;
+  border: 1px solid #272727;
+  color: #ccc;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  text-align: center;
+}
+.footer-link:hover { border-color: #ff4e45; color: #ff4e45; }

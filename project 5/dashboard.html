@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudyTube — Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <div class="dash-wrap">
+    <!-- Sidebar -->
+    <nav class="dash-sidebar">
+      <div class="sidebar-logo">📚 StudyTube</div>
+      <div class="sidebar-nav">
+        <button class="nav-item active" data-tab="overview">📊 Overview</button>
+        <button class="nav-item" data-tab="studylist">📋 Study List</button>
+        <button class="nav-item" data-tab="notes">📝 Notes</button>
+        <button class="nav-item" data-tab="settings">⚙ Settings</button>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="dash-main">
+
+      <!-- ── Overview Tab ── -->
+      <section class="tab-panel active" id="tab-overview">
+        <div class="tab-header">
+          <h1>Overview</h1>
+        </div>
+
+        <!-- Session Card -->
+        <div class="dash-card session-dash-card" id="session-dash-card">
+          <div class="session-dash-active" id="session-dash-active" style="display:none">
+            <div class="session-dash-info">
+              <div class="session-dash-label">Current Study Session</div>
+              <div class="session-dash-reason" id="session-dash-reason">—</div>
+            </div>
+            <div class="session-dash-right">
+              <div class="session-dash-countdown" id="session-dash-countdown">60:00</div>
+              <button class="dash-btn dash-btn-ghost" id="end-session-dash-btn">End Session</button>
+            </div>
+          </div>
+          <div class="session-dash-inactive" id="session-dash-inactive">
+            <div>
+              <div class="session-dash-label">Start a Study Session</div>
+              <div class="session-dash-hint">Enter your study goal to unlock YouTube for 60 minutes.</div>
+            </div>
+            <div class="session-start-form" id="session-start-form">
+              <textarea class="dash-textarea" id="session-reason-input" placeholder="e.g. Watch lecture on photosynthesis..." rows="2" maxlength="200"></textarea>
+              <div class="session-start-err" id="session-start-err" style="display:none">Please enter a reason.</div>
+              <button class="dash-btn dash-btn-primary" id="start-session-dash-btn">▶ Start 60-minute session</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Usage Card -->
+        <div class="dash-card">
+          <div class="dash-card-title">Today's YouTube Time</div>
+          <div class="usage-big" id="dash-usage-time">0:00:00</div>
+          <div class="usage-hint">Time counted only while YouTube is visible and focused.</div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="dash-stats-row">
+          <div class="dash-stat-card">
+            <div class="dash-stat-val" id="stat-videos">0</div>
+            <div class="dash-stat-label">Saved Videos</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-val" id="stat-notes">0</div>
+            <div class="dash-stat-label">Total Notes</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Study List Tab ── -->
+      <section class="tab-panel" id="tab-studylist">
+        <div class="tab-header">
+          <h1>Study List</h1>
+          <div class="tab-search-wrap">
+            <input type="text" class="dash-search" id="studylist-search" placeholder="Search videos..." />
+          </div>
+        </div>
+        <div class="studylist-container" id="studylist-container">
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <div class="empty-title">No videos saved yet</div>
+            <div class="empty-hint">On a YouTube watch page, click "📌 Save to Study List" in the notes panel.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Notes Tab ── -->
+      <section class="tab-panel" id="tab-notes">
+        <div class="tab-header">
+          <h1>All Notes</h1>
+          <div class="tab-search-wrap">
+            <input type="text" class="dash-search" id="notes-search" placeholder="Search notes..." />
+          </div>
+        </div>
+        <div class="notes-container" id="notes-container">
+          <div class="empty-state">
+            <div class="empty-icon">📝</div>
+            <div class="empty-title">No notes yet</div>
+            <div class="empty-hint">While watching a video, click the 📝 button to add timestamped notes.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Settings Tab ── -->
+      <section class="tab-panel" id="tab-settings">
+        <div class="tab-header">
+          <h1>Settings</h1>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-title">Distraction Controls</div>
+
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-name">Hide Shorts</div>
+              <div class="settings-desc">Hides YouTube Shorts from home, search and sidebar.</div>
+            </div>
+            <label class="toggle-wrap">
+              <input type="checkbox" id="set-shorts" class="toggle-input" />
+              <div class="toggle-track"></div>
+            </label>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-name">Hide Recommendations</div>
+              <div class="settings-desc">Hides home feed cards and sidebar video suggestions.</div>
+            </div>
+            <label class="toggle-wrap">
+              <input type="checkbox" id="set-recs" class="toggle-input" />
+              <div class="toggle-track"></div>
+            </label>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-name">Hide Comments</div>
+              <div class="settings-desc">Hides the comment section on video pages.</div>
+            </div>
+            <label class="toggle-wrap">
+              <input type="checkbox" id="set-comments" class="toggle-input" />
+              <div class="toggle-track"></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-title">Focus Gate</div>
+          <div class="settings-row">
+            <div class="settings-info">
+              <div class="settings-name">Enable "Why are you here?" Gate</div>
+              <div class="settings-desc">Shows an overlay requiring a study reason before you can use YouTube. Unlocks for 60 minutes per session.</div>
+            </div>
+            <label class="toggle-wrap">
+              <input type="checkbox" id="set-gate" class="toggle-input" />
+              <div class="toggle-track"></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-title">Data</div>
+          <div class="settings-hint">All data is stored locally in Chrome. Nothing is ever sent to a server.</div>
+          <div class="settings-actions">
+            <button class="dash-btn dash-btn-danger" id="clear-data-btn">🗑 Clear All Data</button>
+          </div>
+          <div class="clear-confirm" id="clear-confirm" style="display:none">
+            <span class="clear-warn">⚠ This will delete all study list, notes, sessions and usage data. Are you sure?</span>
+            <div class="clear-btns">
+              <button class="dash-btn dash-btn-danger" id="clear-confirm-yes">Yes, delete everything</button>
+              <button class="dash-btn dash-btn-ghost" id="clear-confirm-no">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
