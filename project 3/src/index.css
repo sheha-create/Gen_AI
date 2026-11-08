@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+:root {
+  --desk: #F4F6F5;
+  --paper: #FFFFFF;
+  --well: #E6EAE8;
+  --line: #C9D0CC;
+  --ink: #0F1A4A;
+  --ink-2: #3A4470;
+  --ink-3: #5F678F;
+  --ballpoint: #2740C8;
+  --ballpoint-wash: #E3E8FB;
+  --tally: #F2C230;
+  --tally-wash: #FDF3CC;
+  --stamp: #B0245A;
+  --stamp-wash: #F8E1EA;
+  --ledger: #1E7A4F;
+  --ledger-wash: #DDF1E7;
+
+  --font-ui: "Anek Latin", "Noto Sans", system-ui, -apple-system, sans-serif;
+  --font-tape: "IBM Plex Mono", ui-monospace, monospace;
+
+  --paper-shadow: 0 6px 0 -2px rgba(15, 26, 74, 0.10), 0 14px 18px -10px rgba(15, 26, 74, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --desk: #0C1233;
+    --paper: #FFFFFF; /* paper stays paper in night mode! */
+    --well: #161E4A;
+    --line: #2B3566;
+    --ink: #E8ECFF;
+    --ink-2: #B4BCE0;
+    --ink-3: #8F99C7;
+    --ballpoint: #8EA2FF;
+    --ballpoint-wash: #1C2766;
+    --tally: #F2C230;
+    --tally-wash: #3A3216;
+    --stamp: #F07AA6;
+    --stamp-wash: #3F1730;
+    --ledger: #5ED09A;
+    --ledger-wash: #12372A;
+  }
+}
+
+:root[data-theme="dark"] {
+  --desk: #0C1233;
+  --paper: #FFFFFF;
+  --well: #161E4A;
+  --line: #2B3566;
+  --ink: #E8ECFF;
+  --ink-2: #B4BCE0;
+  --ink-3: #8F99C7;
+  --ballpoint: #8EA2FF;
+  --ballpoint-wash: #1C2766;
+  --tally: #F2C230;
+  --tally-wash: #3A3216;
+  --stamp: #F07AA6;
+  --stamp-wash: #3F1730;
+  --ledger: #5ED09A;
+  --ledger-wash: #12372A;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    background-color: var(--desk);
+    color: var(--ink);
+    font-family: var(--font-ui);
+  }
+
+  body {
+    background-color: var(--desk);
+    color: var(--ink);
+    margin: 0;
+    font-family: var(--font-ui);
+    overscroll-behavior-y: none;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+/* Typography Utility Classes */
+.font-ui {
+  font-family: var(--font-ui);
+}
+
+.font-tape {
+  font-family: var(--font-tape);
+}
+
+.font-tabular {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Tape and Paper Style */
+.tape-paper {
+  background-color: var(--paper);
+  color: #0F1A4A;
+  box-shadow: var(--paper-shadow);
+  font-family: var(--font-tape);
+}
+
+/* Serrated Tooth Edge (8px tooth width, 6px deep) */
+.serrated-edge-white {
+  background-image: radial-gradient(circle, transparent, transparent 50%), linear-gradient(135deg, #ffffff 33.333%, transparent 33.333%), linear-gradient(225deg, #ffffff 33.333%, transparent 33.333%);
+  background-size: 16px 6px;
+  background-repeat: repeat-x;
+  height: 6px;
+}
+
+/* VOID Rubber Stamp */
+.stamp-void {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--stamp);
+  color: var(--stamp);
+  border-radius: 4px;
+  transform: rotate(-8deg);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  user-select: none;
+  animation: stampIn 180ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.stamp-demo {
+  border: 3px solid var(--tally);
+  color: #8c6d00;
+  background-color: var(--tally-wash);
+  border-radius: 4px;
+  transform: rotate(-8deg);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+}
+
+@keyframes stampIn {
+  0% {
+    transform: scale(1.6) rotate(-8deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(-8deg);
+    opacity: 1;
+  }
+}
+
+/* Print animation for new line on the live tape */
+@keyframes printSlot {
+  0% {
+    transform: translateY(-16px);
+    opacity: 0;
+    background-color: var(--tally);
+  }
+  50% {
+    background-color: var(--tally);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+    background-color: transparent;
+  }
+}
+
+.line-print-enter {
+  animation: printSlot 300ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Odometer roll animation container */
+.odometer-digit {
+  display: inline-block;
+  overflow: hidden;
+  height: 1.1em;
+  line-height: 1.1em;
+  vertical-align: middle;
+}
